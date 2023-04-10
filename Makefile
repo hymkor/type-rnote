@@ -36,3 +36,6 @@ clean:
 
 manifest:
 	make-scoop-manifest *-windows-*.zip > $(NAME).json
+
+release:
+	gh release create -d -t $(VERSION) $(VERSION) $(wildcard $(NAME)-$(VERSION)-*.zip)
