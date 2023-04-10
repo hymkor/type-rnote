@@ -23,6 +23,7 @@ func queryReleases(user, repo string, logger func(...any)) ([]byte, error) {
 
 type Release struct {
 	Name        string `json:"name"`
+	TagName     string `json:"tag_name"`
 	Draft       bool   `json:"draft"`
 	PublishedAt string `json:"published_at"`
 	Body        string `json:body`
@@ -58,7 +59,11 @@ func mains(args []string) error {
 		if r.Draft {
 			continue
 		}
-		fmt.Println(r.Name)
+		if r.Name == "" {
+			fmt.Println(r.TagName)
+		} else {
+			fmt.Println(r.Name)
+		}
 		fmt.Println("=======")
 
 		dt, err := time.Parse(layout, r.PublishedAt)
