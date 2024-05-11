@@ -1,3 +1,7 @@
+v0.2.0
+======
+May 11, 2024
+
 - Remove CR from output
 - These parameter formats can be available now
     - `type-rnote https://github.com/USER/REPO`
