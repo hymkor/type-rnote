@@ -38,6 +38,6 @@ manifest:
 	make-scoop-manifest *-windows-*.zip > $(NAME).json
 
 release:
-	gh release create -d -t $(VERSION) $(VERSION) $(wildcard $(NAME)-$(VERSION)-*.zip)
+	gh release create -d --notes "" -t $(VERSION) $(VERSION) $(wildcard $(NAME)-$(VERSION)-*.zip)
 
 .PHONY: release clean dist manifest _dist test all
