@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -73,7 +74,7 @@ func mains(args []string) error {
 			fmt.Println(dt.Local().Format("Jan 2, 2006"))
 		}
 		fmt.Println()
-		fmt.Println(r.Body)
+		fmt.Println(strings.ReplaceAll(r.Body, "\r", ""))
 		fmt.Println()
 	}
 	return nil
