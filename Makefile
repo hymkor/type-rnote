@@ -21,15 +21,15 @@ all:
 test:
 	go test -v
 
-_package:
+_dist:
 	$(SET) "CGO_ENABLED=0" && go build $(GOOPT)
 	zip -9 $(NAME)-$(VERSION)-$(GOOS)-$(GOARCH).zip $(NAME)$(EXE)
 
-package:
-	$(SET) "GOOS=linux" && $(SET) "GOARCH=386"   && $(MAKE) _package
-	$(SET) "GOOS=linux" && $(SET) "GOARCH=amd64" && $(MAKE) _package
-	$(SET) "GOOS=windows" && $(SET) "GOARCH=386"   && $(MAKE) _package
-	$(SET) "GOOS=windows" && $(SET) "GOARCH=amd64" && $(MAKE) _package
+dist:
+	$(SET) "GOOS=linux" && $(SET) "GOARCH=386"   && $(MAKE) _dist
+	$(SET) "GOOS=linux" && $(SET) "GOARCH=amd64" && $(MAKE) _dist
+	$(SET) "GOOS=windows" && $(SET) "GOARCH=386"   && $(MAKE) _dist
+	$(SET) "GOOS=windows" && $(SET) "GOARCH=amd64" && $(MAKE) _dist
 
 clean:
 	$(DEL) *.zip $(NAME)$(EXE)
@@ -39,3 +39,5 @@ manifest:
 
 release:
 	gh release create -d -t $(VERSION) $(VERSION) $(wildcard $(NAME)-$(VERSION)-*.zip)
+
+.PHONY: release clean dist manifest _dist test all
