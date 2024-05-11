@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -42,15 +43,29 @@ func getReleases(name, repo string, logger func(...any)) ([]*Release, error) {
 	return releases, nil
 }
 
-const (
-	layout = "2006-01-02T15:04:05Z"
-)
+const layout = "2006-01-02T15:04:05Z"
+
+var rxGitHub = regexp.MustCompile(`(?:https://github.com/)?([^/]+)/([^/+]+)`)
+
+func userAndRepo(args []string) (string, string, error) {
+	if len(args) >= 1 {
+		m := rxGitHub.FindStringSubmatch(args[0])
+		if m != nil {
+			return m[1], m[2], nil
+		}
+		if len(args) >= 2 {
+			return args[0], args[1], nil
+		}
+	}
+	return "", "", errors.New("Usage: type-rnote USER REPO")
+}
 
 func mains(args []string) error {
-	if len(args) < 2 {
-		return errors.New("Usage: type-rnote USER REPO")
+	user, repo, err := userAndRepo(args)
+	if err != nil {
+		return err
 	}
-	releases, err := getReleases(args[0], args[1], func(s ...any) {
+	releases, err := getReleases(user, repo, func(s ...any) {
 		fmt.Fprintln(os.Stderr, s...)
 	})
 	if err != nil {
