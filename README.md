@@ -14,7 +14,14 @@ Install
 
 Download the binary package from [Releases](https://github.com/hymkor/type-rnote/releases) and extract the executable.
 
-### for scoop-installer
+
+### User go install
+
+```
+go install github.com/hymkor/type-rnote@latest
+```
+
+### Use scoop-installer
 
 ```
 scoop install https://raw.githubusercontent.com/hymkor/type-rnote/master/type-rnote.json
