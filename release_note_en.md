@@ -1,3 +1,7 @@
+v0.3.0
+======
+Jan 7, 2025
+
 - Add the option `-r REVISION`
 
 v0.2.0
