@@ -1,3 +1,5 @@
+- Add the option `-r REVISION`
+
 v0.2.0
 ======
 May 11, 2024
