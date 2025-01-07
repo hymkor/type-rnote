@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"flag"
 	"fmt"
 	"io"
 	"net/http"
@@ -11,6 +12,19 @@ import (
 	"strings"
 	"time"
 )
+
+var flagRevision = flag.String("r", "", "revision")
+
+func queryRelease1(user, repo, rev string, logger func(...any)) ([]byte, error) {
+	url := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases/tags/%s", user, repo, rev)
+	logger("Get:", url)
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	return io.ReadAll(resp.Body)
+}
 
 func queryReleases(user, repo string, logger func(...any)) ([]byte, error) {
 	url := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases", user, repo)
@@ -29,6 +43,18 @@ type Release struct {
 	Draft       bool   `json:"draft"`
 	PublishedAt string `json:"published_at"`
 	Body        string `json:body`
+}
+
+func getRelease1(user, repo, rev string, logger func(...any)) (*Release, error) {
+	releaseStr, err := queryRelease1(user, repo, rev, logger)
+	if err != nil {
+		return nil, fmt.Errorf("getRelease1: %w", err)
+	}
+	var release Release
+	if err := json.Unmarshal(releaseStr, &release); err != nil {
+		return nil, fmt.Errorf("json.Unmarshal: %w", err)
+	}
+	return &release, nil
 }
 
 func getReleases(name, repo string, logger func(...any)) ([]*Release, error) {
@@ -65,9 +91,18 @@ func mains(args []string) error {
 	if err != nil {
 		return err
 	}
-	releases, err := getReleases(user, repo, func(s ...any) {
-		fmt.Fprintln(os.Stderr, s...)
-	})
+	var releases []*Release
+	if *flagRevision != "" {
+		var r *Release
+		r, err = getRelease1(user, repo, *flagRevision, func(s ...any) {
+			fmt.Fprintln(os.Stderr, s...)
+		})
+		releases = []*Release{r}
+	} else {
+		releases, err = getReleases(user, repo, func(s ...any) {
+			fmt.Fprintln(os.Stderr, s...)
+		})
+	}
 	if err != nil {
 		return err
 	}
@@ -96,7 +131,8 @@ func mains(args []string) error {
 }
 
 func main() {
-	if err := mains(os.Args[1:]); err != nil {
+	flag.Parse()
+	if err := mains(flag.Args()); err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
 		os.Exit(1)
 	}
