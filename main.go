@@ -106,16 +106,22 @@ func mains(args []string) error {
 	if err != nil {
 		return err
 	}
+	fmt.Println("Changelog")
+	fmt.Println("=========")
+	fmt.Println()
+
 	for _, r := range releases {
 		if r.Draft {
 			continue
 		}
+		var header string
 		if r.Name == "" {
-			fmt.Println(r.TagName)
+			header = r.TagName
 		} else {
-			fmt.Println(r.Name)
+			header = r.Name
 		}
-		fmt.Println("=======")
+		fmt.Println(header)
+		fmt.Println(strings.Repeat("-", len(header)))
 
 		dt, err := time.Parse(layout, r.PublishedAt)
 		if err != nil {
@@ -124,7 +130,7 @@ func mains(args []string) error {
 			fmt.Println(dt.Local().Format("Jan 2, 2006"))
 		}
 		fmt.Println()
-		fmt.Println(strings.ReplaceAll(r.Body, "\r", ""))
+		fmt.Println(strings.TrimSpace(strings.ReplaceAll(r.Body, "\r", "")))
 		fmt.Println()
 	}
 	return nil
