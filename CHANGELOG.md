@@ -1,6 +1,9 @@
 Changelog
 =========
 
+- Use single underline for the version header. (#2)
+- Insert `Changelog` and double underline at the beginning (#2)
+
 v0.3.0
 ------
 Jan 7, 2025
