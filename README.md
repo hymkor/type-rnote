@@ -1,7 +1,7 @@
 type-rnote
 ==========
 
-Read your releases of github repository and cat the release notes to STDOUT.
+Read your releases of github repository and cat the Changelog to STDOUT.
 
 - `type-rnote [-r REVISION] USERNAME REPOSITORY`
 - `type-rnote [-r REVISION] USERNAME/REPOSITORY`
