@@ -71,7 +71,10 @@ func getReleases(name, repo string, logger func(...any)) ([]*Release, error) {
 
 const layout = "2006-01-02T15:04:05Z"
 
-var rxGitHub = regexp.MustCompile(`(?:https://github.com/)?([^/]+)/([^/+]+)`)
+var (
+	rxGitHub = regexp.MustCompile(`(?:https://github.com/)?([^/]+)/([^/+]+)`)
+	rxGitUrl = regexp.MustCompile(`git@github.com:([^/]+)/([\-a-zA-Z0-9_\.]+?)\.git`)
+)
 
 func userAndRepo(args []string) (string, string, error) {
 	if len(args) >= 1 {
@@ -83,7 +86,22 @@ func userAndRepo(args []string) (string, string, error) {
 			return args[0], args[1], nil
 		}
 	}
-	return "", "", errors.New("Usage: type-rnote USER REPO")
+	if fd, err := os.Open(".git/config"); err == nil {
+		defer fd.Close()
+		ini, err := readIni(fd)
+		if err != nil {
+			return "", "", err
+		}
+		for sec, hash := range ini {
+			if strings.HasPrefix(sec, `remote "`) {
+				url := hash["url"]
+				if m := rxGitUrl.FindStringSubmatch(url); m != nil {
+					return m[1], m[2], nil
+				}
+			}
+		}
+	}
+	return "", "", errors.New("Usage: type-rnote [USER REPO]")
 }
 
 func mains(args []string) error {
