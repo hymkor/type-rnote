@@ -3,6 +3,7 @@ Changelog
 
 - Use single underline for the version header. (#2)
 - Insert `Changelog` and double underline at the beginning (#2)
+- Use the information of .git/config when USER and REPO are omitted (#3)
 
 v0.3.0
 ------
