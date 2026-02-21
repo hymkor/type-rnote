@@ -1,37 +1,78 @@
 type-rnote
 ==========
 
-Read your releases of github repository and cat the Changelog to STDOUT.
+`type-rnote` is a CLI tool that fetches release notes from a GitHub repository and outputs them to STDOUT in a Markdown-compatible ChangeLog format.
 
-- `type-rnote [-r REVISION] USERNAME REPOSITORY`
-- `type-rnote [-r REVISION] USERNAME/REPOSITORY`
-- `type-rnote [-r REVISION] https://github.com/USERNAME/REPOSITORY`
+Features
+--------
 
-Square brackets `[ ]` indicate optional arguments.
+- **Flexible Input:** Supports repository URLs, `owner/repo` strings, or separate arguments.
+- **Auto-Detection:** If no repository is specified, it automatically detects the repository information from your local `.git/config`.
+- **Revision Support:** Use the `-r` flag to fetch a specific version/tag.
 
-![image](./screenshot.png)
+Usage
+-----
 
-Install
--------
+```bash
+# Provide username and repository separately
+type-rnote [USERNAME] [REPOSITORY]
 
-Download the binary package from [Releases](https://github.com/hymkor/type-rnote/releases) and extract the executable.
+# Provide as a single string or URL
+type-rnote USERNAME/REPOSITORY
+type-rnote https://github.com/USERNAME/REPOSITORY
 
+# Auto-detect from local .git/config (if inside a git repo)
+type-rnote
 
-### User go install
-
+# Fetch a specific revision
+type-rnote -r v0.3.0 [USERNAME/REPOSITORY]
 ```
+
+> [!NOTE]
+> Square brackets `[ ]` indicate optional arguments.
+
+Sample Output
+-------------
+
+Running the command will produce output formatted like this:
+
+```markdown
+Changelog
+=========
+
+v0.3.0
+------
+Jan 7, 2025
+
+- Add the option `-r REVISION`
+
+v0.2.0
+------
+...
+```
+
+Installation
+------------
+
+### From Releases
+
+Download the pre-built binary for your platform from the [Releases](https://github.com/hymkor/type-rnote/releases) page and add it to your PATH.
+
+### Via Go
+
+```bash
 go install github.com/hymkor/type-rnote@latest
 ```
 
-### Use scoop-installer
+### Via Scoop (Windows)
 
-```
-scoop install https://raw.githubusercontent.com/hymkor/type-rnote/master/type-rnote.json
-```
-
-or
-
-```
+```bash
 scoop bucket add hymkor https://github.com/hymkor/scoop-bucket
 scoop install type-rnote
+```
+
+Or
+
+```bash
+scoop install https://raw.githubusercontent.com/hymkor/type-rnote/master/type-rnote.json
 ```
